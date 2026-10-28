@@ -1,0 +1,53 @@
+name: Atualizar lista M3U
+
+on:
+  schedule:
+    # a cada 6 horas (UTC). Para mudar, edite aqui.
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+  push:
+    paths:
+      - "playlist_unica.py"
+      - "embedtv_update.py"
+      - "embedcanais_update.py"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: atualizar-lista
+  cancel-in-progress: false
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Gerar lista unica
+        run: python playlist_unica.py --workers 6 --sleep 0.1
+
+      - name: Publicar no repositorio
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f canais.m3u stream_urls.tsv stream_urls_canais.tsv
+          if git diff --staged --quiet; then
+            echo "Sem mudancas na lista."
+          else
+            git commit -m "chore: atualiza lista m3u ($(date -u '+%Y-%m-%d %H:%M UTC'))"
+            git push
+          fi
+
+      - name: Resumo
+        run: |
+          echo "### Lista atualizada" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Raw: https://raw.githubusercontent.com/${{ github.repository }}/${{ github.ref_name }}/canais.m3u" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Canais: $(grep -c '^#EXTINF' canais.m3u)" >> "$GITHUB_STEP_SUMMARY"
