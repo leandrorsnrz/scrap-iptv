@@ -63,3 +63,7 @@ python playlist_unica.py --sem-dedupe   # mantém canais repetidos entre as font
   Players que ignoram essa linha podem não abrir alguns desses canais.
 - Quando um canal sai do site, ele sai da lista; se a extração de um canal falhar,
   a URL antiga da cache continua sendo usada.
+- O GitHub Actions consegue renovar as URLs do EmbedTV, mas o site do Embed Canais
+  bloqueia IPs de datacenter (403). Por isso as URLs do Embed Canais ficam guardadas
+  na cache e são renovadas quando você roda o `atualizar_tudo.bat` no seu PC
+  (que sai do seu IP residencial).
