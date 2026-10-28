@@ -1,31 +1,21 @@
 #EXTM3U
-#EXTINF:-1 tvg-logo="logos/xsports.png",XSports
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/cb561c20da9bd04dd0b95669cbba88aa/error.txt
-#EXTINF:-1 tvg-logo="logos/espn_2.png",Espn 2
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/d5774388deb3e74b737feb5d1bb30ba2/error.txt
-#EXTINF:-1 tvg-logo="logos/sportv.png",Sportv
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/7428d1b47e95e13b649e8dd5c25a67c0/error.txt
-#EXTINF:-1 tvg-logo="logos/espn_3.png",Espn 3
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/083f775328906de66039eb9fe65139ad/error.txt
-#EXTINF:-1 tvg-logo="logos/espn.png",Espn
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/a9b08cd063dbf22f5f9b4f53b0e8b0de/error.txt
-#EXTINF:-1 tvg-logo="logos/espn_4.png",Espn 4
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/espn_4.png",Espn 4
 https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/47362a46b7b2c073e13c10a101dff3a1/error.txt
-#EXTINF:-1 tvg-logo="logos/premiere_4.png",Premiere 4
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/espn_3.png",Espn 3
+https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/083f775328906de66039eb9fe65139ad/error.txt
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/sportv.png",Sportv
+https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/7428d1b47e95e13b649e8dd5c25a67c0/error.txt
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/espn_2.png",Espn 2
+https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/d5774388deb3e74b737feb5d1bb30ba2/error.txt
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/espn.png",Espn
+https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/a9b08cd063dbf22f5f9b4f53b0e8b0de/error.txt
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/xsports.png",XSports
+https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/cb561c20da9bd04dd0b95669cbba88aa/error.txt
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/premiere_4.png",Premiere 4
 https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/6de1e19e1d75b8f7c75f93d3f7ad63d5/error.txt
-#EXTINF:-1 tvg-logo="logos/sportv_2.png",Sportv 2
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/6c3e38a8f81313509fd6060d5691d329/error.txt
-#EXTINF:-1 tvg-logo="logos/premiere_1.png",Premiere 1
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/premiere_1.png",Premiere 1
 https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/0e1471b81647c52f570ed442f2489962/error.txt
-#EXTINF:-1 tvg-logo="logos/premiere_2.png",Premiere 2
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/sportv_2.png",Sportv 2
+https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/6c3e38a8f81313509fd6060d5691d329/error.txt
+#EXTINF:-1 tvg-logo="https://raw.githubusercontent.com/leandrorsnrz/scrap-iptv/master/logos/premiere_2.png",Premiere 2
 https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/d6e8ecb01ba24a30cf2a1c59e5fb9899/error.txt
-#EXTINF:-1 tvg-logo="logos/globo_sp.png",Globo SP
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/939b0ec716e2291bf4c581a7fa4b2ba0/error.txt
-#EXTINF:-1 tvg-logo="logos/tnt.png",TNT
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/97852b2885554a864cbc318eddb2ee03/error.txt
-#EXTINF:-1 tvg-logo="logos/a_fazenda_18_-_2.png",A Fazenda 18 - 2
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/44bc9882115225ea76b49cc0c2c16aa7/error.txt
-#EXTINF:-1 tvg-logo="logos/globo_rj.png",Globo RJ
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/1d4727afad4cce0ddbd163688a41f82a/error.txt
-#EXTINF:-1 tvg-logo="logos/a_fazenda_18_-_1.png",A Fazenda 18 - 1
-https://8f246fdcdd11e03e7750ed4f8e050161.s25-cloudfront-net.lat/stream/9a14525e749c02eb43527a71c4aa2ca8/error.txt
