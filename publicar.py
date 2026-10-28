@@ -4,11 +4,12 @@
 Publica a lista gerada no GitHub (via GitHub CLI) e mostra o link raw.
 
 Usa `gh api` com o token que ja esta logado (gh auth login), entao nao precisa
-de git, nem de clonar o repositorio, nem de criar token na mao.
+de git, nem de clonar o repositorio, nem de criar token na mao. Tudo o que for
+publicado vai em UM commit so.
 
 Uso:
-    python publicar.py                                  # sobe canais.m3u
-    python publicar.py --arquivo canais.m3u --arquivo stream_urls.tsv
+    python publicar.py                                  # sobe canais.m3u + caches
+    python publicar.py --arquivo canais.m3u
     python publicar.py --repo usuario/repo --branch main
     python publicar.py --so-link                        # apenas mostra o link
 
@@ -39,6 +40,17 @@ def rodar_gh(argumentos, entrada=None):
     return processo.returncode, processo.stdout.strip(), processo.stderr.strip()
 
 
+def gh_json(metodo, rota, corpo=None):
+    """Chama a API do GitHub e devolve o JSON da resposta (ou None)."""
+    argumentos = ["api", "--method", metodo, rota]
+    if corpo is not None:
+        argumentos += ["--input", "-"]
+    codigo, saida, erro = rodar_gh(argumentos, json.dumps(corpo) if corpo is not None else None)
+    if codigo != 0:
+        raise RuntimeError(erro or saida or f"falha em {metodo} {rota}")
+    return json.loads(saida) if saida else None
+
+
 def verificar_gh():
     try:
         codigo, saida, erro = rodar_gh(["auth", "status"])
@@ -50,42 +62,36 @@ def verificar_gh():
 
 
 def branch_padrao(repo):
-    codigo, saida, erro = rodar_gh(["repo", "view", repo, "--json", "defaultBranchRef",
-                                    "--jq", ".defaultBranchRef.name"])
-    if codigo != 0 or not saida:
-        sys.exit(f"ERRO: nao consegui acessar o repositorio {repo}.\n{erro}")
-    return saida
+    dados = gh_json("GET", f"repos/{repo}")
+    return (dados or {}).get("default_branch") or "master"
 
 
-def sha_atual(repo, caminho, branch):
-    codigo, saida, _ = rodar_gh(["api", f"repos/{repo}/contents/{caminho}?ref={branch}",
-                                 "--jq", ".sha"])
-    return saida if codigo == 0 else ""
+def publicar(repo, branch, caminhos, mensagem):
+    """Cria um commit unico com todos os arquivos e atualiza a branch."""
+    ref = gh_json("GET", f"repos/{repo}/git/ref/heads/{branch}")
+    pai = ref["object"]["sha"]
+    arvore_pai = gh_json("GET", f"repos/{repo}/git/commits/{pai}")["tree"]["sha"]
 
+    itens = []
+    for caminho in caminhos:
+        with open(caminho, "rb") as fh:
+            conteudo = base64.b64encode(fh.read()).decode("ascii")
+        blob = gh_json("POST", f"repos/{repo}/git/blobs",
+                       {"content": conteudo, "encoding": "base64"})
+        destino = os.path.relpath(os.path.abspath(caminho), BASE_DIR)
+        if destino.startswith(".."):
+            destino = os.path.basename(caminho)
+        itens.append({"path": destino.replace(os.sep, "/"), "mode": "100644",
+                      "type": "blob", "sha": blob["sha"]})
+        print(f"  enviado: {destino}")
 
-def publicar(repo, branch, caminho, mensagem):
-    """Cria ou atualiza um arquivo do repositorio. Devolve o nome do arquivo."""
-    if not os.path.exists(caminho):
-        print(f"  pulando {caminho} (nao existe)")
-        return False
-    with open(caminho, "rb") as fh:
-        conteudo = base64.b64encode(fh.read()).decode("ascii")
-
-    corpo = {"message": mensagem, "content": conteudo, "branch": branch}
-    sha = sha_atual(repo, caminho, branch)
-    if sha:
-        corpo["sha"] = sha
-
-    codigo, saida, erro = rodar_gh(
-        ["api", "--method", "PUT", f"repos/{repo}/contents/{caminho}", "--input", "-"],
-        entrada=json.dumps(corpo),
-    )
-    if codigo != 0:
-        print(f"  FALHOU {caminho}: {erro or saida}")
-        return False
-    acao = "atualizado" if sha else "criado"
-    print(f"  {caminho} {acao}")
-    return True
+    arvore = gh_json("POST", f"repos/{repo}/git/trees",
+                     {"base_tree": arvore_pai, "tree": itens})
+    commit = gh_json("POST", f"repos/{repo}/git/commits",
+                     {"message": mensagem, "tree": arvore["sha"], "parents": [pai]})
+    gh_json("PATCH", f"repos/{repo}/git/refs/heads/{branch}",
+            {"sha": commit["sha"], "force": False})
+    print(f"  commit: {commit['sha'][:10]} em {branch}")
 
 
 def main():
@@ -103,17 +109,20 @@ def main():
     if not args.so_link:
         verificar_gh()
         branch = args.branch or branch_padrao(args.repo)
-        arquivos = args.arquivo or ARQUIVOS_PADRAO
+        caminhos = args.arquivo or [os.path.join(BASE_DIR, a) for a in ARQUIVOS_PADRAO]
+        faltando = [c for c in caminhos if not os.path.exists(c)]
+        caminhos = [c for c in caminhos if os.path.exists(c)]
+        for caminho in faltando:
+            print(f"  pulando {caminho} (nao existe)")
+        if not caminhos:
+            sys.exit("ERRO: nenhum arquivo para publicar.")
         mensagem = args.mensagem or "chore: atualiza lista m3u"
         print(f"Publicando em {args.repo} ({branch}):")
-        for arquivo in arquivos:
-            publicar(args.repo, branch, arquivo, mensagem)
-
-    base_raw = f"https://raw.githubusercontent.com/{args.repo}/{branch}"
+        publicar(args.repo, branch, caminhos, mensagem)
 
     print()
     print("Link raw da lista:")
-    print(f"  {base_raw}/canais.m3u")
+    print(f"  https://raw.githubusercontent.com/{args.repo}/{branch}/canais.m3u")
 
 
 if __name__ == "__main__":
