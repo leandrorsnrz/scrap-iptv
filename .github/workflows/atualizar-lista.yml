@@ -5,11 +5,21 @@ on:
     # a cada 6 horas (UTC). Para mudar, edite aqui.
     - cron: "0 */6 * * *"
   workflow_dispatch:
+    inputs:
+      forcar:
+        description: "Baixar TODAS as URLs de novo (ignora a cache)"
+        type: boolean
+        default: false
+      ttl:
+        description: "Renovar URLs com mais de N horas (0 = nunca)"
+        type: string
+        default: "24"
   push:
     paths:
       - "playlist_unica.py"
       - "embedtv_update.py"
       - "embedcanais_update.py"
+      - ".github/workflows/atualizar-lista.yml"
 
 permissions:
   contents: write
@@ -30,7 +40,10 @@ jobs:
           python-version: "3.12"
 
       - name: Gerar lista unica
-        run: python playlist_unica.py --workers 6 --sleep 0.1
+        env:
+          TTL: ${{ inputs.ttl || '24' }}
+          FORCAR: ${{ inputs.forcar && '--force' || '' }}
+        run: python playlist_unica.py --workers 6 --sleep 0.1 --ttl "$TTL" $FORCAR
 
       - name: Publicar no repositorio
         run: |
